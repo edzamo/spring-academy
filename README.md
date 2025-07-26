@@ -75,3 +75,54 @@ In short, the **Framework** provides the *features*, while **Boot** provides a f
 *   **`@GetMapping("/path/{id}")`:** A method-level annotation that maps a method to handle HTTP GET requests for a specific path. The `{id}` part is a dynamic path variable.
 *   **`@PathVariable`:** An annotation used on a method parameter to extract the value from the corresponding path variable (e.g., `{id}`) and inject it into the method.
 *   **`ResponseEntity`:** A Spring class used to build a complete HTTP response. It allows you to control the **status code**, **headers**, and the **response body**. The `ResponseEntity.ok(body)` method is a convenient shortcut to return a `200 OK` status with a given body.
+
+## Repositories & Spring Data
+
+At this point in our development journey, we’ve got a system which returns a hard-coded Cash Card record from our Controller. However, what we really want is to return real data from a database.
+
+Spring Data works with Spring Boot to make database integration simple. Before we jump in, let’s briefly talk about Spring Data’s architecture.
+
+### Controller-Repository Architecture
+
+The **Separation of Concerns** principle states that well-designed software should be modular, with each module having distinct and separate concerns from any other module.
+
+Up until now, our codebase only returns a hard-coded response from the Controller. This setup violates the Separation of Concerns principle by mixing the concerns of a Controller (a web interface abstraction) with the concerns of reading and writing data to a data store. To solve this, we’ll use the **Repository pattern**.
+
+A common architectural framework that divides these layers is called **Layered Architecture**. We can think of our Repository and Controller as two layers:
+-   **Controller Layer**: Near the client, receives and responds to web requests.
+-   **Repository Layer**: Near the data store, reads from and writes to it.
+
+The Repository is the interface between the application and the database, providing a common abstraction that makes it easier to switch databases if needed. Spring Data provides a collection of robust data management tools, including implementations of the Repository pattern.
+
+### Choosing a Database
+
+For our database, we’ll use an embedded, in-memory database called **H2**.
+-   **Embedded**: It's a Java library, added as a dependency.
+-   **In-memory**: It stores data in memory only, not in permanent storage.
+
+There are tradeoffs to using an in-memory database. It's great for development (no separate RDBMS installation, clean state on every run), but a persistent database is needed for production. This can lead to a **Dev-Prod Parity** mismatch, where the application behaves differently in development versus production. Fortunately, H2 is highly compatible with other relational databases, minimizing this issue.
+
+### Auto-Configuration
+
+This showcases one of the most powerful features of Spring Boot: **Auto-Configuration**. By simply adding the Spring Data and H2 dependencies, Spring Boot will automatically configure the application to communicate with H2. No manual configuration is needed.
+
+### Spring Data’s CrudRepository
+
+We’ll use Spring Data’s `CrudRepository`. It seems magical at first. The following is a complete implementation of all CRUD operations:
+
+```java
+interface CashCardRepository extends CrudRepository<CashCard, Long> {
+}
+```
+
+With just this interface, a caller can use predefined methods like `findById`:
+
+```java
+cashCard = cashCardRepository.findById(99);
+```
+
+Where is the implementation? `CrudRepository` is an interface. Spring Data provides the implementation for us at runtime based on the specific Spring Data framework used (like Spring Data JDBC). The Spring runtime then exposes the repository as a bean that can be injected anywhere in the application.
+
+While `CrudRepository` is convenient, it generates standard SQL. For more complex use cases, you might need to write custom SQL statements. For now, its out-of-the-box methods are sufficient.
+
+**Summary**: To manage data, we use the Repository pattern for separation of concerns, with Spring Data's `CrudRepository` providing automatic CRUD operations. Spring Boot's auto-configuration simplifies database setup, and we'll use the H2 in-memory database for development.
