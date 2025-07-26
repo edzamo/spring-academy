@@ -1,0 +1,22 @@
+# Gradle
+.gradle
+build/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# macOS
+.DS_Store
+
+# Log files
+*.log
+
+# Compiled output
+/target/
+
+.vscode/
+.vscode/launch.json
