@@ -12,6 +12,19 @@ Here is a summary of the most important points from the initial course notes.
 
 While often used together, it's crucial to understand that Spring Boot is not a replacement for the Spring Framework, but rather an extension built on top of it to improve developer productivity.
 
+## 📚 Spring Framework vs. Spring Boot
+
+| Feature                  | Spring Framework                                      | Spring Boot                                         |
+|--------------------------|--------------------------------------------------------|-----------------------------------------------------|
+| Startup Configuration    | ❌ Manual configuration via XML or Java classes        | ✅ Auto-configuration based on classpath            |
+| Embedded Web Server      | ❌ Requires external deployment (WAR in Tomcat, etc.)  | ✅ Ships with embedded Tomcat/Jetty                 |
+| Dependencies Management  | ❌ Manual (add each dependency separately)             | ✅ Starter dependencies (`spring-boot-starter-*`)   |
+| Production Readiness     | ❌ Needs custom setup                                  | ✅ Includes Actuator, metrics, health checks        |
+| Ideal For                | Highly customized enterprise apps                     | Quick microservice & REST API development           |
+
+
+
+
 #### The Spring Framework: The Foundation
 
 The Spring Framework provides the core, foundational infrastructure for building enterprise Java applications. It is highly modular and focuses on flexibility and extensibility. Key features include:
