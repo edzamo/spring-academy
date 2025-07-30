@@ -11,6 +11,7 @@ import org.springframework.boot.test.json.JacksonTester;
 @JsonTest
 class CashCardJsonTest {
 
+
     @Autowired
     private JacksonTester<CashCard> json;
 
