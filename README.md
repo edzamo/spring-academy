@@ -126,3 +126,16 @@ Where is the implementation? `CrudRepository` is an interface. Spring Data provi
 While `CrudRepository` is convenient, it generates standard SQL. For more complex use cases, you might need to write custom SQL statements. For now, its out-of-the-box methods are sufficient.
 
 **Summary**: To manage data, we use the Repository pattern for separation of concerns, with Spring Data's `CrudRepository` providing automatic CRUD operations. Spring Boot's auto-configuration simplifies database setup, and we'll use the H2 in-memory database for development.
+
+## Implementing POST Endpoints
+
+To add a "Create" operation to our API, we need to consider several aspects of the HTTP request and response.
+
+*   **ID Generation**: The server will be responsible for generating the unique ID for each new resource. This is a simple and common approach, as databases are efficient at managing unique keys.
+*   **HTTP Method**: We will use the `POST` method for creating new resources.
+*   **Idempotence**: A `POST` request is **not idempotent**. This means that making the same `POST` request multiple times will result in multiple new resources being created, each with a different server-generated ID. This is in contrast to idempotent methods like `GET`, `PUT`, and `DELETE`, where repeated requests have the same effect as a single request.
+*   **Request Body**: The client sends the data for the new resource (e.g., the `amount`) in the request body, typically as JSON. The ID is omitted since the server will generate it.
+*   **Response**:
+    *   **Status Code**: A successful creation should return `201 CREATED`. This is more specific than `200 OK` because it explicitly confirms that a new resource was created.
+    *   **Headers**: The response should include a `Location` header containing the URI of the newly created resource (e.g., `Location: /cashcards/100`). This allows the client to easily retrieve the new resource.
+*   **Spring Web Convenience**: Spring provides helpful methods like `ResponseEntity.created(uri)` to build a `201 CREATED` response. This method automatically sets the status code and adds the `Location` header, simplifying the controller logic.
